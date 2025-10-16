@@ -56,17 +56,17 @@ public class GameConstants {
 
     // ================== CONSTANTE PENTRU INAMICI ==================
 
-    public static final int ENEMY_BASE_HEALTH = 60;
-    public static final int ENEMY_HEALTH_PER_LEVEL = 25;
-    public static final int ENEMY_BASE_DEFENSE = 3;
-    public static final int ENEMY_DEFENSE_PER_LEVEL = 2;
-    public static final int ENEMY_BASE_GOLD = 15;
-    public static final int ENEMY_GOLD_PER_LEVEL = 8;
-    public static final int ENEMY_BASE_XP = 25;
-    public static final int ENEMY_XP_PER_LEVEL = 10;
-    public static final int ENEMY_BASE_DAMAGE = 20;
-    public static final int ENEMY_DAMAGE_PER_LEVEL = 5;
-//    public static final double ENEMY_BASE_CRIT_CHANCE = 8.0;
+    // ================== CONSTANTE PENTRU INAMICI ==================
+    public static final int ENEMY_BASE_HEALTH = 60;        // ✅ TREBUIE > 0
+    public static final int ENEMY_HEALTH_PER_LEVEL = 25;   // ✅ TREBUIE > 0
+    public static final int ENEMY_BASE_DEFENSE = 3;        // ✅ TREBUIE >= 0
+    public static final int ENEMY_DEFENSE_PER_LEVEL = 2;   // ✅ TREBUIE >= 0
+    public static final int ENEMY_BASE_GOLD = 15;          // ✅ TREBUIE > 0
+    public static final int ENEMY_GOLD_PER_LEVEL = 8;      // ✅ TREBUIE > 0
+    public static final int ENEMY_BASE_XP = 25;            // ✅ TREBUIE > 0
+    public static final int ENEMY_XP_PER_LEVEL = 10;       // ✅ TREBUIE > 0
+    public static final int ENEMY_BASE_DAMAGE = 20;        // ✅ TREBUIE > 0
+    public static final int ENEMY_DAMAGE_PER_LEVEL = 5;    // ✅ TREBUIE > 0
 
 
     // ==================== PROGRESSION ====================

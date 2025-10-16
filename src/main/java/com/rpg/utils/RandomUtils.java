@@ -18,12 +18,15 @@ public class RandomUtils {
     }
 
     /**
-     * Returnează un număr random între min și max (inclusiv)
+     * Verifică că randomInt funcționează corect
      */
     public static int randomInt(int min, int max) {
+        if (min > max) {
+            throw new IllegalArgumentException("Min nu poate fi mai mare decât max!");
+        }
+        java.util.Random random = new java.util.Random();
         return random.nextInt((max - min) + 1) + min;
     }
-
     /**
      * Returnează un element random dintr-o listă
      */
@@ -35,15 +38,26 @@ public class RandomUtils {
     }
 
     /**
-     * Returnează un element random dintr-un array
+     * Returnează un element aleatoriu dintr-un array
      */
     public static <T> T randomElement(T[] array) {
         if (array == null || array.length == 0) {
             return null;
         }
-        return array[random.nextInt(array.length)];
+        int index = randomInt(0, array.length - 1);
+        return array[index];
     }
 
+    /**
+     * Overload special pentru String[][]
+     */
+    public static String[] randomElement(String[][] array) {
+        if (array == null || array.length == 0) {
+            return new String[]{"Default Enemy", "👹", "physical", "magical"};
+        }
+        int index = randomInt(0, array.length - 1);
+        return array[index];
+    }
     /**
      * Returnează true/false random
      */
@@ -58,16 +72,15 @@ public class RandomUtils {
         return random.nextDouble();
     }
 
-    /**
-     * Aplică o variație aleatorie la o valoare.
-     */
     public static int applyRandomVariation(int baseValue, int variationPercent) {
-        if (variationPercent <= 0) return baseValue;
+        if (baseValue <= 0) return baseValue;  // Nu modifica dacă e deja 0
 
-        double variation = (variationPercent / 100.0);
-        double min = baseValue * (1.0 - variation);
-        double max = baseValue * (1.0 + variation);
+        double variation = baseValue * (variationPercent / 100.0);
+        int minValue = (int)(baseValue - variation);
+        int maxValue = (int)(baseValue + variation);
 
-        return (int) randomDouble();
+        int result = randomInt(Math.max(1, minValue), maxValue);  // MINIMUM 1!
+        return result;
     }
+
 }
