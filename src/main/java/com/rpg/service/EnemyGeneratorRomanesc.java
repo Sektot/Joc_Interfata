@@ -6,6 +6,8 @@ import com.rpg.utils.RandomUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.lang.reflect.Field;
 
 /**
  * Generator de inamici romanizați, organizați pe nivele de dungeons.
@@ -116,9 +118,78 @@ public class EnemyGeneratorRomanesc {
         return inamici;
     }
 
-    /**
-     * Generează un inamic normal bazat pe nivelul dungeonului.
-     */
+//    /**
+//     * Generează un inamic normal bazat pe nivelul dungeonului.
+//     */
+//    public Inamic genereazaInamicNormal(int nivel) {
+//        String[][] tabelInamici;
+//        String prefix;
+//
+//        // Determină tier-ul și selectează inamicii corespunzători
+//        if (nivel <= 10) {
+//            tabelInamici = INAMICI_SLABI;
+//            prefix = "";
+//        } else if (nivel <= 20) {
+//            tabelInamici = INAMICI_MEDII;
+//            prefix = "";
+//        } else if (nivel <= 30) {
+//            tabelInamici = INAMICI_PUTERNICI;
+//            prefix = "Puternic ";
+//        } else if (nivel <= 40) {
+//            tabelInamici = INAMICI_LEGENDARI;
+//            prefix = "Legendar ";
+//        } else {
+//            tabelInamici = INAMICI_EPICI;
+//            prefix = "Epic ";
+//        }
+//
+//        // Selectează un inamic aleatoriu din tier
+//        String[] inamicData = RandomUtils.randomElement(tabelInamici);
+//        String nume = prefix + inamicData[0] + " " + inamicData[1] + " Lv" + nivel;
+//
+//        // Calculează statistici
+//        int viataMaxima = GameConstants.ENEMY_BASE_HEALTH + (nivel * GameConstants.ENEMY_HEALTH_PER_LEVEL);
+//        int defense = GameConstants.ENEMY_BASE_DEFENSE + (nivel * GameConstants.ENEMY_DEFENSE_PER_LEVEL);
+//        int gold = GameConstants.ENEMY_BASE_GOLD + (nivel * GameConstants.ENEMY_GOLD_PER_LEVEL);
+//        int xpOferit = GameConstants.ENEMY_BASE_XP + (nivel * GameConstants.ENEMY_XP_PER_LEVEL);
+//
+//        // 🛡️ SAFETY CHECK - Dacă constantele lipsesc, folosește fallback
+//        if (viataMaxima <= 0) {
+//            viataMaxima = 50 + (nivel * 20);  // Fallback: 70 HP la nivel 1
+//            System.out.println("⚠️ WARNING: ENEMY_BASE_HEALTH e 0 - folosesc fallback!");
+//        }
+//        if (gold <= 0) {
+//            gold = 10 + (nivel * 5);  // Fallback: 15 gold la nivel 1
+//            System.out.println("⚠️ WARNING: ENEMY_BASE_GOLD e 0 - folosesc fallback!");
+//        }
+//        if (xpOferit <= 0) {
+//            xpOferit = 20 + (nivel * 8);  // Fallback: 28 XP la nivel 1
+//            System.out.println("⚠️ WARNING: ENEMY_BASE_XP e 0 - folosesc fallback!");
+//        }
+//
+//        // Variație aleatorie
+//        viataMaxima = RandomUtils.applyRandomVariation(viataMaxima, 20);
+//        defense = RandomUtils.applyRandomVariation(defense, 15);
+//        gold = RandomUtils.applyRandomVariation(gold, 30);
+//        xpOferit = RandomUtils.applyRandomVariation(xpOferit, 25);
+//
+//        // 🔍 DEBUG pentru a vedea valorile calculate
+//        System.out.printf("🔍 ENEMY STATS CALC: HP=%d, Defense=%d, Gold=%d, XP=%d%n",
+//                viataMaxima, defense, gold, xpOferit);
+//
+//        // Creează inamicul
+//        Inamic inamic = new Inamic(nume, nivel, viataMaxima, defense, gold, xpOferit, false);
+//
+//        // Setează vulnerabilități specifice
+//        inamic.setTipDamageVulnerabil(inamicData[2]);
+//        inamic.setTipDamageRezistent(inamicData[3]);
+//        inamic.setCritChanceBonus(RandomUtils.randomInt(0, 5));
+//       // inamic.setPoateAplicaDebuff(RandomUtils.chancePercent(20.0));
+//
+//        return inamic;
+//    }
+
+
     public Inamic genereazaInamicNormal(int nivel) {
         String[][] tabelInamici;
         String prefix;
@@ -141,33 +212,42 @@ public class EnemyGeneratorRomanesc {
             prefix = "Epic ";
         }
 
-        // Selectează un inamic aleatoriu din tier
+        // ✅ RandomUtils funcționează perfect - folosim direct
         String[] inamicData = RandomUtils.randomElement(tabelInamici);
-        String nume = prefix + inamicData[0] + " " + inamicData[1] + " Lv" + nivel;
+        String nume = prefix + inamicData + " " + inamicData + " Lv" + nivel;
 
-        // Calculează statistici
+        // ✅ GameConstants funcționează perfect - folosim direct
         int viataMaxima = GameConstants.ENEMY_BASE_HEALTH + (nivel * GameConstants.ENEMY_HEALTH_PER_LEVEL);
         int defense = GameConstants.ENEMY_BASE_DEFENSE + (nivel * GameConstants.ENEMY_DEFENSE_PER_LEVEL);
         int gold = GameConstants.ENEMY_BASE_GOLD + (nivel * GameConstants.ENEMY_GOLD_PER_LEVEL);
         int xpOferit = GameConstants.ENEMY_BASE_XP + (nivel * GameConstants.ENEMY_XP_PER_LEVEL);
 
-        // Variație aleatorie
+        // Variație aleatorie (cum era în codul original)
         viataMaxima = RandomUtils.applyRandomVariation(viataMaxima, 20);
         defense = RandomUtils.applyRandomVariation(defense, 15);
         gold = RandomUtils.applyRandomVariation(gold, 30);
         xpOferit = RandomUtils.applyRandomVariation(xpOferit, 25);
 
-        // Creează inamicul
+        // Safety check (să nu fie niciodată 0)
+        viataMaxima = Math.max(10, viataMaxima);
+        gold = Math.max(1, gold);
+        xpOferit = Math.max(1, xpOferit);
+        defense = Math.max(0, defense);
+
+        System.out.printf("✅ ENEMY ORIGINAL CODE: %s | HP=%d, Gold=%d, XP=%d%n",
+                nume, viataMaxima, gold, xpOferit);
+
+        // Creează inamicul - constructorul setează damage prin GameConstants.calculateEnemyDamage()
         Inamic inamic = new Inamic(nume, nivel, viataMaxima, defense, gold, xpOferit, false);
 
-        // Setează vulnerabilități specifice
+        // Setează vulnerabilități (cum era în codul original)
         inamic.setTipDamageVulnerabil(inamicData[2]);
         inamic.setTipDamageRezistent(inamicData[3]);
         inamic.setCritChanceBonus(RandomUtils.randomInt(0, 5));
-       // inamic.setPoateAplicaDebuff(RandomUtils.chancePercent(20.0));
 
         return inamic;
     }
+
 
     /**
      * Generează un boss românesc pentru un nivel dat.
